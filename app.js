@@ -1,11 +1,12 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+import createError from'http-errors';
+import express from 'express';
+import path from 'path';
+import cookieParser from 'cookie-parser';
+import logger from 'morgan';
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+import indexRouter from './routes/index';
+import userApiRouter from './routes/userApi';
+// var usersRouter = require('./routes/users');
 
 var app = express();
 
@@ -20,8 +21,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-require('./routes/api.routes')(app);
+app.use('/api/users', userApiRouter);
+// app.use('/users', usersRouter); // todo Add userList page (ejs)
 
 
 // Connect DB
