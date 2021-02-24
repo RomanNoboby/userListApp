@@ -3,8 +3,7 @@ const User = db.users;
 // const Op = db.Sequelize.Op;
 
 
-exports.create = (req, res) => {
-    // Validate request
+exports.create = async (req, res) => {
     if (!req.body.login) {
         console.log(res.body);
         res.status(400).send({
@@ -13,152 +12,106 @@ exports.create = (req, res) => {
         return;
     }
 
-    // Create User
-    const user = {
-        login: req.body.login,
-        name: req.body.name,
-        password: req.body.password,
-        email: req.body.email,
-        is_authorized: req.body.is_authorized ? req.body.is_authorized : false
-    };
-
-    // Save User in the database
-    User.create(user)
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while creating the User."
-            });
+    const {login, name, password, email, is_authorized } = req.body;
+    const newUser = { login, name, password, email, is_authorized };
+    try {
+        const data = await User.create(newUser);
+        res.send(data);
+    } catch(err){
+        res.status(500).send({
+            message:
+                err.message || "Some error occurred while creating the User."
         });
+    }
 };
 
-exports.findOne = (req, res) => {
+exports.findOne = async (req, res) => {
     const id = req.params.id;
     const filterParam = {
         attributes: {
             exclude: ['password','createdAt', 'updatedAt'],
         }
     }
-
-    User.findByPk(id, filterParam)
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: "Error retrieving User with id=" + id
-            });
+    try {
+        const data = await User.findByPk(id, filterParam)
+        res.send(data);
+    } catch (err) {
+        res.status(500).send({
+            message: "Error retrieving User with id=" + id
         });
+    }
 };
 
-exports.getAll = (req, res) => {
+exports.getAll = async (req, res) => {
     const filterParam = {
         attributes: {
             exclude: ['password','createdAt', 'updatedAt'],
         }
     }
-
-    User.findAll(filterParam)
-        .then(data => {
-            console.log(data);
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving users."
-            });
+    try {
+        const data = await User.findAll(filterParam)
+        res.send(data);
+    } catch (err) {
+        res.status(500).send({
+            message:
+                err.message || "Some error occurred while retrieving users."
         });
+    }
 };
 
-exports.update = (req, res) => {
+exports.update = async (req, res) => {
+    const { name, login, email, password, is_authorized} = req.body ;
     const id = req.params.id;
-
     const updatedData = {
-        login: req.body.login,
-        name: req.body.name,
-        password: req.body.password,
-        email: req.body.email,
-        is_authorized: req.body.is_authorized ? req.body.is_authorized : false
+        name,
+        login,
+        email,
+        password,
+        is_authorized
     }
-
-
-    exports.findOne = (req, res) => {
-        const id = req.params.id;
-
-        User.findByPk(id)
-            .then(data => {
-                res.send(data);
-            })
-            .catch(err => {
-                res.status(500).send({
-                    message: "Error retrieving User with id=" + id
-                });
-            });
-    };
-
-    User.update(updatedData, {
-        where: { id: id }
-    })
-        .then(num => {
-            if (num == 1) {
-                res.send({
-                    message: "User was updated successfully."
-                });
-            } else {
-                res.send({
-                    message: `Cannot update User with id=${id}. Maybe User was not found or req.body is empty!`
-                });
-            }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: "Error updating User with id=" + id
-            });
+    try {
+        const num = await User.update(updatedData, {
+            where: { id }
         });
+        console.log(  num );
+
+        console.log(typeof num);
+        res.send({
+            message: (Array.isArray(num) && num[0]=== 1 ) ? "User was updated successfully." :
+                `Cannot update User with id=${id}. Maybe User was not found or req.body is empty!`
+        });
+    } catch (err) {
+        res.status(500).send({
+            message: "Error updating User with id=" + id
+        });
+    }
 };
 
-exports.delete = (req, res) => {
+exports.delete = async (req, res) => {
     const id = req.params.id;
-
-    User.destroy({
-        where: { id: id }
-    })
-        .then(num => {
-            if (num == 1) {
-                res.send({
-                    message: "User was deleted successfully!"
-                });
-            } else {
-                res.send({
-                    message: `Cannot delete User with id=${id}. Maybe User was not found!`
-                });
-            }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: "Could not delete User with id=" + id
-            });
+    const params = { where: { id }};
+    try {
+        await User.destroy(params)
+        res.send({
+            message: "User was deleted successfully!"
         });
+    } catch (err){
+        res.send({
+            message: `Cannot delete User with id=${id}. Maybe User was not found!`
+        });
+    }
 };
 
-exports.deleteAll = (req, res) => {
-    User.destroy({
-        where: {},
-        truncate: false
-    })
-        .then(nums => {
-            res.send({ message: `${nums} Tutorials were deleted successfully!` });
-        })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while removing all tutorials."
-            });
+exports.deleteAll = async (req, res) => {
+    const params ={where: {}, truncate: false};
+    try {
+        await User.destroy(params)
+    } catch(err){
+        res.status(500).send({
+            message:
+                err.message || "Some error occurred while removing all tutorials."
         });
+    }
 };
 
 
