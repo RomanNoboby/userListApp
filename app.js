@@ -4,8 +4,8 @@ import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 
-import indexRouter from './routes/index';
-import userApiRouter from './routes/userApi';
+import indexRouter from './src/routes/index';
+import userApiRouter from './src/routes/userApi';
 // var usersRouter = require('./routes/users');
 
 var app = express();
@@ -26,7 +26,7 @@ app.use('/api/users', userApiRouter);
 
 
 // Connect DB
-const db = require("./models");
+const db = require("./src/models");
 db.sequelize.sync();
 
 
