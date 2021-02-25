@@ -4,6 +4,7 @@ import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import initRoutes from './src/routes';
+import db from "./src/models";
 
 var app = express();
 
@@ -20,7 +21,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 initRoutes(app);
 
 // Connect DB
-const db = require("./src/models");
 db.sequelize.sync();
 
 

@@ -1,6 +1,5 @@
-const db = require("../models");
+import db from '../models';
 const User = db.users;
-// const Op = db.Sequelize.Op;
 
 
 exports.create = async (req, res) => {
@@ -29,7 +28,7 @@ exports.findOne = async (req, res) => {
     const id = req.params.id;
     const filterParam = {
         attributes: {
-            exclude: ['password','createdAt', 'updatedAt'],
+            exclude: ['password'],
         }
     }
     try {
@@ -45,7 +44,7 @@ exports.findOne = async (req, res) => {
 exports.getAll = async (req, res) => {
     const filterParam = {
         attributes: {
-            exclude: ['password','createdAt', 'updatedAt'],
+            exclude: ['password'],
         }
     }
     try {
