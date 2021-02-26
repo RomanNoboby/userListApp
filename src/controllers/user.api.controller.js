@@ -1,11 +1,8 @@
-const db = require("../models");
+import db from '../models';
 const User = db.users;
-// const Op = db.Sequelize.Op;
-
 
 exports.create = async (req, res) => {
     if (!req.body.login) {
-        console.log(res.body);
         res.status(400).send({
             message: "Content can not be empty!"
         });
@@ -27,13 +24,8 @@ exports.create = async (req, res) => {
 
 exports.findOne = async (req, res) => {
     const id = req.params.id;
-    const filterParam = {
-        attributes: {
-            exclude: ['password','createdAt', 'updatedAt'],
-        }
-    }
     try {
-        const data = await User.findByPk(id, filterParam)
+        const data = await User.findByPk(id)
         res.send(data);
     } catch (err) {
         res.status(500).send({
@@ -43,13 +35,8 @@ exports.findOne = async (req, res) => {
 };
 
 exports.getAll = async (req, res) => {
-    const filterParam = {
-        attributes: {
-            exclude: ['password','createdAt', 'updatedAt'],
-        }
-    }
     try {
-        const data = await User.findAll(filterParam)
+        const data = await User.findAll()
         res.send(data);
     } catch (err) {
         res.status(500).send({
@@ -73,9 +60,6 @@ exports.update = async (req, res) => {
         const num = await User.update(updatedData, {
             where: { id }
         });
-        console.log(  num );
-
-        console.log(typeof num);
         res.send({
             message: (Array.isArray(num) && num[0]=== 1 ) ? "User was updated successfully." :
                 `Cannot update User with id=${id}. Maybe User was not found or req.body is empty!`
@@ -113,6 +97,3 @@ exports.deleteAll = async (req, res) => {
         });
     }
 };
-
-
-

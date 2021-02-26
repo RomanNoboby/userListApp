@@ -3,7 +3,7 @@ module.exports = (sequelize, Sequelize) => {
         login: {
             type: Sequelize.STRING
         },
-        name:{
+        name: {
             type: Sequelize.STRING
         },
         email: {
@@ -15,7 +15,10 @@ module.exports = (sequelize, Sequelize) => {
         is_authorized: {
             type: Sequelize.BOOLEAN
         }
+    }, {
+        defaultScope: {
+            exclude: ['password']
+        }
     });
-
     return User;
 };

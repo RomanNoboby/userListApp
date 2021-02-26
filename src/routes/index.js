@@ -1,9 +1,8 @@
-import express from 'express';
-const router = express.Router();
+import homeRouter from "./home";
+import userApiRouter from "./userApi";
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
-
-export default router;
+const initRoutes = function(app) {
+    app.use('/', homeRouter);
+    app.use('/api/users', userApiRouter);
+}
+export default initRoutes;
