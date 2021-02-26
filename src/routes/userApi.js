@@ -1,7 +1,6 @@
 import express from 'express';
 import * as usersApi from '../controllers/user.api.controller';
 const router = express.Router();
-// const usersApi = require("../controllers/user.api.controller.js");
 
 // Create a new User
 router.post("/", usersApi.create);

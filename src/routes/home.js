@@ -4,8 +4,7 @@ import * as homeController from '../controllers/home.controller'
 
 /* GET home page. */
 router.get('/', homeController.index);
-router.get('/login', function (req,res,nex) {
-    res.render('pages/login', {title: 'UserList Login'});
-});
+/* GET login page. */
+router.get('/login', homeController.loginPage);
 
 export default router;

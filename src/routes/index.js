@@ -1,8 +1,8 @@
-import indexRouter from "./home";
+import homeRouter from "./home";
 import userApiRouter from "./userApi";
 
 const initRoutes = function(app) {
-    app.use('/', indexRouter);
+    app.use('/', homeRouter);
     app.use('/api/users', userApiRouter);
 }
 export default initRoutes;

@@ -3,29 +3,14 @@ const User = db.users;
 const moment = require('moment');
 
 exports.index  = async (req, res) => {
-    const filterParam = {
-        attributes: {
-            exclude: ['password'],
-        }
-    }
     try {
-        const users = await User.findAll(filterParam);
+        const users = await User.findAll();
         const data = {
             users,
             title: "HomePage",
             moment
         }
-        console.log(data.users[0].createdAt);
-        console.log(typeof data.users[0].createdAt);
-
         res.render('pages/index', data);
-
-
-        // res.send(users);
-
-
-
-
     } catch (err) {
         res.status(500).send({
             message:
@@ -33,3 +18,7 @@ exports.index  = async (req, res) => {
         });
     }
 };
+
+exports.loginPage = async (req, res) => {
+         res.render('pages/login', {title: 'UserList Login'});
+}
