@@ -1,124 +1,93 @@
-import InternalServerErrorException from "../errors/InternalServerErrorException";
-import BadRequestException from "../errors/BadRequestException";
-
-
-function isStringValid( data ){
-    if (data && typeof data === "string") {
-        return true;
-    }
-    return false;
-}
-function isStringLengthInRange(data, min, max){
-    const len = data.length;
-
-    if ( isStringValid(data) && len >= min && len <= max) {
-        return true;
-    }
-    return false;
-}
-
-function validateName( name, errors ){
-    let nameErrors = [];
-
-    if (!isStringValid(name)){
-        nameErrors.push( new BadRequestException('Request body error! `name` must be string and not empty'));
-    }
-    if (!isStringLengthInRange(name,6,50)){
-        nameErrors.push( new BadRequestException('Request body error! `name` length must by in range from 6 to 60'));
-    }
-
-    if (nameErrors.length){
-        return  {
-            propertyName: 'name',
-            err: nameErrors
-        };
-    }
-}
-
-function validateLogin( login ){
-    let loginErrors = [];
-
-    if (!isStringValid(login)){
-        loginErrors.push( new BadRequestException('Request body error! `login` must be string and not empty'));
-    }
-    if (!isStringLengthInRange(login,6,50)){
-        loginErrors.push( new BadRequestException('Request body error! `login` length must by in range from 6 to 60'));
-    }
-
-    if (loginErrors.length){
-        return  {
-            propertyName: 'login',
-            err: loginErrors
-        };
-    }
-}
-
-function validateEmail( email,errors ){
-    let emailErrors = [];
-
-    if (!isStringValid(email)){
-        emailErrors.push( new BadRequestException('Request body error! `email` must be string and not empty'));
-    }
-    if (!isStringLengthInRange(email,6,50)){
-        emailErrors.push( new BadRequestException('Request body error! `email` length must by in range from 8 to 60'));
-    }
-    if (email.indexOf("@") === -1) {
-        emailErrors.push( new BadRequestException('Request body error! `email` must include @'));
-    }
-
-    if (emailErrors.length){
-        return  {
-            propertyName: 'email',
-            err: emailErrors
-        };
-    }
-}
-
+//--------------------------------------------------------------------------------------------------------------------//
 class Validator {
     #errors = {}
     #validateFunctions = [];
-
-    add(validateFunction){
-        this.#validateFunctions.push( validateFunction );
+    #validators = {
+        isString: function (data) {
+            return typeof data === "string";
+        },
+        isRegExp: function (data, props={}){
+            console.log('isRegExp: function (data, props={}){');
+            return !!(typeof data === "string" && data.match(props.regex));
+        }
     }
 
-    validate(){
-        this.#validateFunctions.forEach((func)=>{
-           const funcResult = func();
-           if (funcResult){
-               this.#errors[funcResult.propertyName] = funcResult.err
-           }
+    add(fieldName, validationObjets) {
+        const validateFunction = {
+            fieldName,
+            validationObjets,
+        }
+        this.#validateFunctions.push(validateFunction);
+    }
+
+    validate(dataObject) {
+
+        this.#validateFunctions.forEach(({fieldName, validationObjets}) => {
+            const fieldErrors = [];
+
+            validationObjets.forEach((validationObj) => {
+                const currentValidator = validationObj.validator instanceof Function ?
+                    validationObj.validator :
+                    this.#validators[validationObj.validator];
+
+                if (!currentValidator(dataObject[fieldName], validationObj.props)) {
+                    fieldErrors.push(new Error(validationObj.message));
+                }
+            });
+            if (fieldErrors.length) {
+                this.#errors[fieldName] = fieldErrors;
+            }
         });
     }
 
-    getErrors(){
+    getErrors() {
         return {...this.#errors}
     }
 }
 
-export function createUserValidator (req, res, next){
-   const validator = new Validator();
+export function createUserValidator(req, res, next) {
+    const validator = new Validator;
 
-   validator.add(()=>validateLogin(req.body.login));
-   validator.add(()=> validateEmail(req.body.email));
-   validator.add(()=> validateName(req.body.name));
+    validator.add('login', [
+        { validator: 'isString', message: 'Request body error! `login` must be string.', props: {} },
+        { validator: 'isRegExp', message: "Request body error' `login` wrong format ", props: {regex: "^[a-zA-Z0-9]+$"}},
+    ]);
+    validator.add('name', [
+        { validator: 'isString', message: 'Request body error! `name` must be string.', props: {} },
+        { validator: 'isRegExp', message: "Request body error' `name` wrong format", props: {regex: "^[a-zA-Z0-9 ]+$"}},
+    ]);
 
-   validator.validate();
+    validator.add('email', [
+        { validator: 'isString', message: 'Request body error! `email` must be string.', props: {} },
+        { validator: 'isRegExp', message: "Request body error' `email` wrong format", props: {regex: "\\S+@\\S+\\.\\S+"}},
+    ]);
 
-   console.log('========= createUserValidator result')
-   console.log(validator.getErrors());
+    validator.validate(req.body);
 
-   next();
+    console.log('========= updateUserValidator result')
+    console.log(validator.getErrors());
+
+    next();
 }
 
-export function updateUserValidator (req, res, next){
-    const validator = new Validator();
+export function updateUserValidator(req, res, next) {
+    const validator = new Validator;
 
-    validator.add(()=>validateLogin(req.body.login));
-    validator.add(()=> validateEmail(req.body.email));
-    validator.add(()=> validateName(req.body.name));
+    validator.add('login', [
+        { validator: 'isString', message: 'Request body error! `login` must be string.', props: {} },
+        { validator: 'isRegExp', message: "Request body error' `login` wrong format ", props: {regex: "^[a-zA-Z0-9]+$"}},
+    ]);
+    validator.add('name', [
+        { validator: 'isString', message: 'Request body error! `name` must be string.', props: {} },
+        { validator: 'isRegExp', message: "Request body error' `name` wrong format", props: {regex: "^[a-zA-Z0-9 ]+$"}},
+    ]);
 
-    validator.validate();
+    validator.add('email', [
+        { validator: 'isString', message: 'Request body error! `email` must be string.', props: {} },
+        { validator: 'isRegExp', message: "Request body error' `email` wrong format", props: {regex: "\\S+@\\S+\\.\\S+"}},
+    ]);
+
+    validator.validate(req.body);
 
     console.log('========= updateUserValidator result')
     console.log(validator.getErrors());
