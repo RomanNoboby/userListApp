@@ -28,11 +28,14 @@ function validateName( name, errors ){
     }
 
     if (nameErrors.length){
-       errors['name']=nameErrors;
+        return  {
+            propertyName: 'name',
+            err: nameErrors
+        };
     }
 }
 
-function validateLogin( login,err ){
+function validateLogin( login ){
     let loginErrors = [];
 
     if (!isStringValid(login)){
@@ -43,7 +46,10 @@ function validateLogin( login,err ){
     }
 
     if (loginErrors.length){
-        err['login']= loginErrors
+        return  {
+            propertyName: 'login',
+            err: loginErrors
+        };
     }
 }
 
@@ -60,28 +66,63 @@ function validateEmail( email,errors ){
         emailErrors.push( new BadRequestException('Request body error! `email` must include @'));
     }
 
-    if(emailErrors.length){
-        errors['email']=emailErrors;
+    if (emailErrors.length){
+        return  {
+            propertyName: 'email',
+            err: emailErrors
+        };
+    }
+}
+
+class Validator {
+    #errors = {}
+    #validateFunctions = [];
+
+    add(validateFunction){
+        this.#validateFunctions.push( validateFunction );
+    }
+
+    validate(){
+        this.#validateFunctions.forEach((func)=>{
+           const funcResult = func();
+           if (funcResult){
+               this.#errors[funcResult.propertyName] = funcResult.err
+           }
+        });
+    }
+
+    getErrors(){
+        return {...this.#errors}
     }
 }
 
 export function createUserValidator (req, res, next){
-   let errors = {};
-   validateLogin(req.body.login,errors);
-   validateEmail(req.body.email, errors);
-   validateName(req.body.name, errors);
+   const validator = new Validator();
 
-   console.log(errors);
+   validator.add(()=>validateLogin(req.body.login));
+   validator.add(()=> validateEmail(req.body.email));
+   validator.add(()=> validateName(req.body.name));
+
+   validator.validate();
+
+   console.log('========= createUserValidator result')
+   console.log(validator.getErrors());
+
    next();
 }
 
 export function updateUserValidator (req, res, next){
-    let errors = {};
-    validateName(req.body.name, errors);
-    validateLogin(req.body.login, errors);
-    validateEmail(req.body.email, errors);
+    const validator = new Validator();
 
-    console.log(errors);
+    validator.add(()=>validateLogin(req.body.login));
+    validator.add(()=> validateEmail(req.body.email));
+    validator.add(()=> validateName(req.body.name));
+
+    validator.validate();
+
+    console.log('========= updateUserValidator result')
+    console.log(validator.getErrors());
+
     next();
 }
 
