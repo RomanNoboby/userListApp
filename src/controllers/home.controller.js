@@ -2,7 +2,7 @@ import db from '../models';
 const User = db.users;
 const moment = require('moment');
 
-exports.index  = async (req, res) => {
+exports.index  = async (req, res, next) => {
     try {
         const users = await User.findAll();
         const data = {
@@ -12,10 +12,9 @@ exports.index  = async (req, res) => {
         }
         res.render('pages/index', data);
     } catch (err) {
-        res.status(500).send({
-            message:
-                err.message || "Some error occurred while retrieving users."
-        });
+        err.status= 500;
+        err.message = err.message || "Some error occurred while retrieving users."
+        next(err);
     }
 };
 

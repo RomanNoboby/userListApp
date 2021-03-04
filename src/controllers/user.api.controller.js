@@ -1,11 +1,10 @@
 import db from '../models';
+import InternalServerErrorException from "../errors/InternalServerErrorException";
 const User = db.users;
 
-exports.create = async (req, res) => {
+exports.create = async (req, res, next) => {
     if (!req.body.login) {
-        res.status(400).send({
-            message: "Content can not be empty!"
-        });
+        next( new InternalServerErrorException("Content can not be empty!"));
         return;
     }
 
@@ -15,38 +14,30 @@ exports.create = async (req, res) => {
         const data = await User.create(newUser);
         res.send(data);
     } catch(err){
-        res.status(500).send({
-            message:
-                err.message || "Some error occurred while creating the User."
-        });
+        next( new InternalServerErrorException("Some error occurred while creating the User."));
     }
 };
 
-exports.findOne = async (req, res) => {
+exports.findOne = async (req, res, next) => {
     const id = req.params.id;
     try {
-        const data = await User.findByPk(id)
+        const data = await User.findByPk(id);
         res.send(data);
     } catch (err) {
-        res.status(500).send({
-            message: "Error retrieving User with id=" + id
-        });
+        next( new InternalServerErrorException("Error retrieving User with id=" + id));
     }
 };
 
-exports.getAll = async (req, res) => {
+exports.getAll = async (req, res, next) => {
     try {
         const data = await User.findAll()
         res.send(data);
     } catch (err) {
-        res.status(500).send({
-            message:
-                err.message || "Some error occurred while retrieving users."
-        });
+        next( new InternalServerErrorException("Some error occurred while retrieving users."));
     }
 };
 
-exports.update = async (req, res) => {
+exports.update = async (req, res, next) => {
     const { name, login, email, password, is_authorized} = req.body ;
     const id = req.params.id;
     const updatedData = {
@@ -65,13 +56,11 @@ exports.update = async (req, res) => {
                 `Cannot update User with id=${id}. Maybe User was not found or req.body is empty!`
         });
     } catch (err) {
-        res.status(500).send({
-            message: "Error updating User with id=" + id
-        });
+        next( new InternalServerErrorException("Error updating User with id=" + id));
     }
 };
 
-exports.delete = async (req, res) => {
+exports.delete = async (req, res,next) => {
     const id = req.params.id;
     const params = { where: { id }};
     try {
@@ -80,20 +69,15 @@ exports.delete = async (req, res) => {
             message: "User was deleted successfully!"
         });
     } catch (err){
-        res.send({
-            message: `Cannot delete User with id=${id}. Maybe User was not found!`
-        });
+        next( new InternalServerErrorException(`Cannot delete User with id=${id}. Maybe User was not found!`));
     }
 };
 
-exports.deleteAll = async (req, res) => {
+exports.deleteAll = async (req, res, next) => {
     const params ={where: {}, truncate: false};
     try {
         await User.destroy(params)
     } catch(err){
-        res.status(500).send({
-            message:
-                err.message || "Some error occurred while removing all tutorials."
-        });
+        next( new InternalServerErrorException("Some error occurred while removing all tutorials."));
     }
 };

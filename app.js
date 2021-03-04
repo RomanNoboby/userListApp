@@ -21,7 +21,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 initRoutes(app);
 
 // Connect DB
-db.sequelize.sync();
+db.sequelize.sync(); //This creates the table if it doesn't exist (and does nothing if it already exists)
 
 
 // catch 404 and forward to error handler
