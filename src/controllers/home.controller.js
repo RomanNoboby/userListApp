@@ -1,4 +1,5 @@
 import db from '../models';
+import InternalServerErrorException from "../errors/InternalServerErrorException";
 const User = db.users;
 const moment = require('moment');
 
@@ -6,6 +7,7 @@ exports.index  = async (req, res, next) => {
     try {
         const users = await User.findAll();
         const data = {
+            req,
             users,
             title: "HomePage",
             moment
@@ -17,7 +19,3 @@ exports.index  = async (req, res, next) => {
         next(err);
     }
 };
-
-exports.loginPage = async (req, res) => {
-         res.render('pages/login', {title: 'UserList Login'});
-}

@@ -1,0 +1,141 @@
+<%- include('../parts/header', {req: req}); %>
+
+
+<% if(!formData){ %>
+
+    <div class="container">
+        <div class="row justify-content-center p-5">
+            <div class="col-lg-5 col-md-6 col-sm-8 bg-light border border-secondary rounded p-4 ">
+                <form id="signup" name="signup" method="post" action="/signup" >
+
+                    <div class="form-group">
+                        <label for="login">Login</label>
+                        <input type="text" name="login" class="form-control " id="login" placeholder="someLoginByUserListApp22">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" name="password" class="form-control" id="password" placeholder="Password">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="passwordConfirmation">Confirm password</label>
+                        <input type="password" name="passwordConfirmation" class="form-control" id="passwordConfirmation" placeholder="Password">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" value="submit">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+    <% } else { %>
+
+
+    <div class="container">
+        <div class="row justify-content-center p-5">
+            <div class="col-lg-5 col-md-6 col-sm-8 bg-light border border-secondary rounded p-4 ">
+                <form id="signup" name="signup" method="post" action="/signup" >
+
+                    <% const loginFormData = formData.login;
+                        if(loginFormData){ %>
+                            <div class="form-group">
+                                <label for="login">Login</label>
+                                <input type="text" name="login"
+                                       class="form-control
+                                   <%= loginFormData.errors && 'is-invalid' %>
+                                   <%= !loginFormData.errors && 'is-valid' %>"
+                                       id="login"
+                                       value="<%=loginFormData.value %>"
+                                       placeholder="my login">
+                                <div class="valid-feedback">Looks good!</div>
+                                <div class="invalid-feedback">
+                                    <% if(loginFormData.errors) {
+                                        let a = loginFormData.errors;
+                                        for(var i=0; i<a.length;i++) {%>
+                                            <p><%=a[i].msg %></p><%
+                                        }
+                                    }%>
+                                </div>
+                            </div>
+                        <%} else{ %>
+                        <div class="form-group">
+                            <label for="login">Login</label>
+                            <input type="text" name="login" class="form-control " id="login" placeholder="someLoginByUserListApp22">
+                        </div>
+                    <%}
+                    const passFormData = formData.password;
+                        if(passFormData){ %>
+                            <div class="form-group">
+                                <label for="Password">password</label>
+                                <input type="password" name="password"
+                                       class="form-control
+                                   <%= passFormData.errors && 'is-invalid' %>
+                                   <%= !passFormData.errors && 'is-valid' %>"
+                                       id="password"
+                                       value="<%=passFormData.value %>"
+                                       placeholder="*** password ***">
+                                <div class="valid-feedback">Looks good!</div>
+                                <div class="invalid-feedback">
+                                    <% if(passFormData.errors) {
+                                        let a = passFormData.errors;
+                                    for(var i=0; i<a.length;i++) {%>
+                                    <p><%=a[i].msg %></p><%
+                                    }
+                                    }%>
+                                </div>
+                            </div>
+                        <%} else{ %>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" name="password" class="form-control " id="password" placeholder="*** password ***">
+                            </div>
+                        <%}
+
+                        const confirmFormData = formData.passwordConfirmation;
+                        if(confirmFormData){ %>
+                        <div class="form-group">
+                            <label for="passwordConfirmation">Confirm pass</label>
+                            <input type="password" name="passwordConfirmation"
+                                   class="form-control
+                                   <%= confirmFormData.errors && 'is-invalid' %>
+                                   <%= !confirmFormData.errors && 'is-valid' %>"
+                                   id="passwordConfirmation"
+                                   value="<%=confirmFormData.value %>"
+                                   placeholder="*** confirm pass ***">
+                            <div class="valid-feedback">Looks good!</div>
+                            <div class="invalid-feedback">
+                                <% if(confirmFormData.errors) {
+                                    let a = confirmFormData.errors;
+                                for(var i=0; i<a.length;i++) {%>
+                                <p><%=a[i].msg %></p><%
+                                }
+                                }%>
+                            </div>
+                        </div>
+                        <%} else{ %>
+                            <div class="form-group">
+                                <label for="passwordConfirmation">Confirm pass</label>
+                                <input type="password" name="passwordConfirmation" class="form-control " id="passwordConfirmation" placeholder="*** Confirm pass ***">
+                            </div>
+                        <%}%>
+                    <button type="submit" class="btn btn-primary" value="submit">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+<% } %>
+
+
+
+
+
+
+<%- include('../parts/footer'); %>

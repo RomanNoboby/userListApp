@@ -17,7 +17,7 @@ router.get("/:id", usersApi.findOne);
 
 // Update a User with id
 router.put("/:id", [
-    validators.updateUserValidator,
+    // validators.updateUserValidator,
     usersApi.update
 ]);
 

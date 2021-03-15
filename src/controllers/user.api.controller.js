@@ -30,6 +30,15 @@ exports.findOne = async (req, res, next) => {
 
 exports.getAll = async (req, res, next) => {
     try {
+        // console.log('!!! contentType');
+        // console.log('html '+ req.is('html'));
+        // console.log('text/htm '+ req.is('text/html'));
+        // console.log('text/* ' + req.is('text/*'));
+        // console.log('json ' + req.is('json'));
+        // console.log('application/json '+ req.is('application/json'));
+        // console.log('application/* ' + req.is('application/*'));
+        // console.log('html '+ req.is('html'));
+        // console.log(req);
         const data = await User.findAll()
         res.send(data);
     } catch (err) {
@@ -45,12 +54,13 @@ exports.update = async (req, res, next) => {
         login,
         email,
         password,
-        is_authorized
+        // is_authorized
     }
     try {
         const num = await User.update(updatedData, {
             where: { id }
         });
+        res.redirect('/');
         res.send({
             message: (Array.isArray(num) && num[0]=== 1 ) ? "User was updated successfully." :
                 `Cannot update User with id=${id}. Maybe User was not found or req.body is empty!`

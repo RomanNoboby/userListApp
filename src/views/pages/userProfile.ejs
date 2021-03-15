@@ -1,0 +1,56 @@
+<%- include('../parts/header', {req: req}); %>
+
+<div class="container">
+    <div class="row justify-content-center p-5">
+        <div class="col-lg-8 col-md-10 col-sm-12  ">
+            <div class="card">
+                <div class="card-header"><strong>User details</strong></div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-4 col-lg-3 "><strong class="float-md-right">Login</strong></div>
+                        <div class="col">
+                            <%= user.login%>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-4 col-lg-3 "><strong class="float-md-right">User name</strong></div>
+                        <div class="col">
+                            <%= user.name %>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-4 col-lg-3 "><strong class="float-md-right">User email</strong></div>
+                        <div class="col">
+                            <%= user.email%>
+                        </div>
+                    </div>
+                    <div class="row text-secondary">
+                        <div class="col-sm-12 col-md-4 col-lg-3 "><strong class="float-md-right">Created at</strong></div>
+                        <div class="col">
+                            <%=moment(user.createdAt).format('DD.MM.YYYY') %>
+                        </div>
+                    </div>
+                    <div class="row text-secondary">
+                        <div class="col-sm-12 col-md-4 col-lg-3 "><strong class="float-md-right">Updated at</strong></div>
+                        <div class="col">
+                            <%=moment(user.updatedAt).format('DD.MM.YYYY') %>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer ">
+                    <div class="row justify-content-end pr-2">
+                        <form>
+                            <input class="btn btn-secondary mr-1" type="button" value="Back" onclick="history.go(-1)">
+                        </form>
+                        <a class="btn btn-primary mr-1" href="/user/<%= user.id%>/update">Edit</a>
+                        <a class="btn btn-danger mr-1" href="/user/<%= user.id%>/delete">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<%- include('../parts/footer'); %>
