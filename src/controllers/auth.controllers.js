@@ -1,12 +1,11 @@
 
 exports.loginPage = async (req, res) => {
-
-    res.render('pages/login', {title: 'UserList Login' , req });
+    const fleshFormData = req.flash('signIn-formData');
+    res.render('pages/login', {title: 'Login page' , formData: fleshFormData[0] || undefined, req });
 }
 
 exports.signUpPage = async (req, res) => {
     const fleshFormData = req.flash('formData');
-    // const formData = fleshFormData[0]||undefined;
-    res.render('pages/signup', {title: 'UserList SingUp',  formData: fleshFormData[0] || undefined, req});
+    res.render('pages/signup', {title: 'SingUp',  formData: fleshFormData[0] || undefined, req});
 }
 

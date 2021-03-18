@@ -2,35 +2,163 @@
 <div class="container">
     <div class="row justify-content-center p-5">
         <div class="col-lg-5 col-md-6 col-sm-8 bg-light border border-secondary rounded p-4 ">
+
             <form id="user" name="user" method="post" action="/user/<%= user.id %>/update" >
+                <% if (!formData) {%>
 
-                <div class="form-group">
-                    <label for="login">Login</label>
-                    <input type="text" name="login" class="form-control" id="login" value="<%= user.login || '' %>" placeholder="someLoginByUserListApp22">
-                </div>
+                    <div class="form-group">
+                        <label for="login">Login</label>
+                        <input type="text" name="login" class="form-control" id="login" value="<%= user.login || '' %>" placeholder="someLoginByUserListApp22">
+                    </div>
 
-                <div class="form-group">
-                    <label for="name">User name</label>
-                    <input type="text" name="name" class="form-control" id="name" value="<%= user.name || '' %>" placeholder="mrNoBody">
-                </div>
+                    <div class="form-group">
+                        <label for="name">User name</label>
+                        <input type="text" name="name" class="form-control" id="name" value="<%= user.name || '' %>" placeholder="mrNoBody">
+                    </div>
 
-                <div class="form-group">
-                    <label for="email">Email address</label>
-                    <input type="email" name="email" class="form-control" id="email" value="<%= user.email || '' %>" placeholder="name@example.com">
-                </div>
+                    <div class="form-group">
+                        <label for="email">Email address</label>
+                        <input type="email" name="email" class="form-control" id="email" value="<%= user.email || '' %>" placeholder="name@example.com">
+                    </div>
 
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" name="password" class="form-control" id="password" value="<%= user.password %>"placeholder="Password">
-                </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" name="password" class="form-control" id="password" value="<%= user.password %>"placeholder="Password">
+                    </div>
 
-                <div class="row justify-content-end pr-2">
-                    <form>
-                        <input class="btn btn-secondary mr-1" type="button" value="Back" onclick="history.go(-1)">
-                    </form>
-                    <button type="submit" class="btn btn-primary" value="submit">Update</button>
-                </div>
+                    <div class="row justify-content-end pr-2">
+                        <form>
+                            <input class="btn btn-secondary mr-1" type="button" value="Back" onclick="history.go(-1)">
+                        </form>
+                        <button type="submit" class="btn btn-primary" value="submit">Update</button>
+                    </div>
 
+                <%} else {
+
+                        const loginFormData = formData.login;
+                        if(loginFormData){ %>
+                            <div class="form-group">
+                                <label for="login">Login</label>
+                                <input type="text" name="login"
+                                       class="form-control
+                                   <%= loginFormData.errors && 'is-invalid' %>
+                                   <%= !loginFormData.errors && 'is-valid' %>"
+                                       id="login"
+                                       value="<%= loginFormData.value %>"
+                                       placeholder="someLogin"
+                                       autocomplete="off">
+                                <div class="valid-feedback">Looks good!</div>
+                                <div class="invalid-feedback">
+                                    <% if(loginFormData.errors) {
+                                        let a = loginFormData.errors;
+                                    for(var i = 0; i < a.length;i++) { %>
+                                        <p><%= a[i].msg %></p>
+                                    <%}%>
+                                    <%}%>
+                                </div>
+                            </div>
+                        <% } else {%>
+                            <div class="form-group">
+                                <label for="login">Login</label>
+                                <input type="text" name="login" class="form-control" id="login" autocomplete="off" value="<%= user.login || '' %>" placeholder="someLoginByUserListApp22">
+                            </div>
+                        <%}
+
+                            const nameFormData = formData.name;
+                            if(nameFormData){ %>
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" name="name"
+                                       class="form-control
+                                       <%= nameFormData.errors && 'is-invalid' %>
+                                       <%= !nameFormData.errors && 'is-valid' %>"
+                                       id="name"
+                                       value="<%= nameFormData.value %>"
+                                       placeholder="some name"
+                                       autocomplete="off">
+                                <div class="valid-feedback">Looks good!</div>
+                                <div class="invalid-feedback">
+                                    <% if(nameFormData.errors) {
+                                        let a = nameFormData.errors;
+                                    for(var i = 0; i < a.length;i++) { %>
+                                        <p><%= a[i].msg %></p>
+                                    <%}%>
+                                    <%}%>
+                                </div>
+                            </div>
+                        <% } else {%>
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" name="name" class="form-control" id="name" autocomplete="off" value="<%= user.name || '' %>" placeholder="some name">
+                            </div>
+                        <%}
+
+                        const emailFormData = formData.email;
+                        if(emailFormData){ %>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" name="email"
+                                   class="form-control
+                                   <%= emailFormData.errors && 'is-invalid' %>
+                                   <%= !emailFormData.errors && 'is-valid' %>"
+                                   id="email"
+                                   value="<%= emailFormData.value %>"
+                                   placeholder="Email@example.com">
+                            <div class="valid-feedback">Looks good!</div>
+                            <div class="invalid-feedback">
+                                <% if(emailFormData.errors) {
+                                    let a = emailFormData.errors;
+                                for(var i = 0; i < a.length;i++) { %>
+                                    <p><%= a[i].msg %></p>
+                                <%}%>
+                                <%}%>
+                            </div>
+                        </div>
+                    <% } else {%>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" name="email" class="form-control" id="email" value="<%= user.email || '' %>" placeholder="Email@example.com">
+                        </div>
+                    <%}
+
+                    const passFormData = formData.password;
+                    if(passFormData){ %>
+                        <div class="form-group">
+                            <label for="Password">password</label>
+                            <input type="password" name="password"
+                                   class="form-control
+                                   <%= passFormData.errors && 'is-invalid' %>
+                                   <%= !passFormData.errors && 'is-valid' %>"
+                                   id="password"
+                                   value="<%= passFormData.value %>"
+                                   placeholder="*** password ***">
+                            <div class="valid-feedback">Looks good!</div>
+                            <div class="invalid-feedback">
+                                <% if(passFormData.errors) {
+                                    let a = passFormData.errors;
+                                for(var i = 0; i < a.length;i++) { %>
+                                    <p><%= a[i].msg %></p>
+                                <%
+                                }
+                                } %>
+                            </div>
+                        </div>
+                    <% } else{ %>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" name="password" class="form-control " id="password"
+                                   placeholder="*** password ***">
+                        </div>
+                    <% } %>
+
+                        <div class="row justify-content-end pr-2">
+                            <form>
+                                <input class="btn btn-secondary mr-1" type="button" value="Back" onclick="history.go(-1)">
+                            </form>
+                            <button type="submit" class="btn btn-primary" value="submit">Update</button>
+                        </div>
+
+                <%}%>
 
             </form>
         </div>

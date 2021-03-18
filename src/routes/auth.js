@@ -20,6 +20,17 @@ const isLoginUnique = async (value) => {
     });
 }
 
+function  shouldByNoAuthenticated (req, res, next) {
+    if (!req.isAuthenticated())
+        return next();
+    res.redirect('/');
+}
+
+function shouldByAuthenticated  (req, res, next) {
+    if (req.isAuthenticated())
+        return next();
+    res.redirect('/signin');
+}
 
 module.exports = function (passport) { //todo Reformat to export
 
@@ -28,26 +39,13 @@ module.exports = function (passport) { //todo Reformat to export
         res.redirect('/');
     });
 
-    function  isNotAuthenticated (req, res, next) {
-        if (!req.isAuthenticated())
-            return next();
-        res.redirect('/');
-    }
-
-
-
-
     router.get('/signup', [
-        isNotAuthenticated,
+        shouldByNoAuthenticated,
         authController.signUpPage
     ]);
 
-
-
-
-
     router.post('/signup',[
-        isNotAuthenticated,
+        shouldByNoAuthenticated,
 
         body('login')
             .isLength({ min: 6 })
@@ -66,39 +64,33 @@ module.exports = function (passport) { //todo Reformat to export
         passport.authenticate('local-signUp', {
             successRedirect: '/updateuserprofile',
             failureRedirect: '/signup',
-            // failureRedirect: '/auth/temp/result',
-
-            // failureFlash: true,
         }),
     ]);
 
-    router.get('/auth/temp/result', (req,res,next)=>{
-        // res.send(req.session);
-        // console.log(req.flash('formErrors'));
-        res.send(req.session);
-    });
 
     router.get('/signin', [
-        isNotAuthenticated,
+        shouldByNoAuthenticated,
         authController.loginPage
     ]);
 
     router.post('/signin', [
-        isNotAuthenticated,
+        shouldByNoAuthenticated,
+
+        body('login')
+            .isLength({ min: 6 })
+            .withMessage('Login must be at least 6 characters'),
+
+        body('password')
+            .isLength({ min: 6 })
+            .withMessage('Password must be at least 6 characters'),
+
         passport.authenticate('local-signIn', {
         successRedirect: '/',
         failureRedirect: '/signin'
         })
     ]);
 
-    const isAuthenticated = function (req, res, next) {
-        // if (req.isAuthenticated())
-        if (req.isAuthenticated())
-            return next();
-        res.redirect('/signin');
-    }
-
-    router.get('/updateuserprofile', isAuthenticated, function (req,res,next){
+    router.get('/updateuserprofile', shouldByAuthenticated, function (req,res,next){
         res.redirect('/user/' + req.user.id + '/update' );
     })
 

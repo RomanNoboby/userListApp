@@ -37,10 +37,6 @@ module.exports = (sequelize, Sequelize) => {
         is_authorized: {
             type: Sequelize.BOOLEAN
         }
-    // }, {
-    //     defaultScope: {
-    //         exclude: ['password']
-    //     }
     });
     return User;
 };

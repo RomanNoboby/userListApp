@@ -28,7 +28,7 @@ db.sequelize.sync(); //This creates the table if it doesn't exist (and does noth
 
 
 
-app.use(expressSession({secret: 'mySecretKey', cookie: { maxAge: 60000 }}));
+app.use(expressSession({secret: 'mySecretKey', cookie: { maxAge: 600000 }}));
 app.use(passport.initialize());
 app.use(passport.session());
 

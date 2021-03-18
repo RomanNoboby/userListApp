@@ -35,14 +35,13 @@ module.exports = function (passport){
             console.log(err);
             return done(err);
         }
-
     }
+
     const localStrategy = new LocalStrategy ({
         usernameField: 'login',
         passwordField: 'password',
         passReqToCallback: true
     }, verifyFunction);
-
 
     passport.use('local-signUp', localStrategy);
 }
