@@ -58,14 +58,7 @@ module.exports = function(passport){
                 req.flash('signIn-formData'); //clear flesh.formData
                 req.flash('signIn-formData', formData);
             }
-
-            console.log('formData');
-            console.log(formData);
-            console.log('req.session.flash');
-            console.log(JSON.stringify(req.session.flash));
-
             return done(null, user);
-
         } catch (err) {
             return done(err);
         }
