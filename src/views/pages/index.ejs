@@ -1,86 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <title><%= title %></title>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-        <link type="text/css" href='/stylesheets/style.css' rel='stylesheet' media="all"/>
-    </head>
-    <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <!-- Navbar content -->
-        <a class="navbar-brand" href="#">UserList</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarText">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Another Page</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">AboutApp</a>
-                </li>
-            </ul>
-            <button type="button" class="btn btn-primary">LogIn/LogOut</button>
-        </div>
-    </nav>
+<%- include('../parts/header', {req: req}); %>
+<div class="container">
+    <h4 class="m-3">User list</h4>
+    <div class="table-responsive fixed-table-body">
+        <table class="table table-striped table-hover ">
+            <thead>
+            <tr>
+                <th>id</th>
+                <th>Name</th>
+                <th>login</th>
+                <th>Email</th>
+                <th>CreatedAt</th>
+                <th>UpdatedAt</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
 
-        <div class="container ">
-            <h3>User list</h3>
+            <% for(var i=0; i<users.length;i++) {%>
+            <tr>
+                <td><%=users[i].id %></td>
+                <td><%=users[i].name %></td>
+                <td><%=users[i].login %></td>
+                <td><%=users[i].email %></td>
+                <td><%=moment(users[i].createdAt).format('DD.MM.YYYY') %></td>
 
-            <table class="table table-striped table-hover">
-                <thead>
-                <tr>
-                    <th>id</th>
-                    <th>Name</th>
-                    <th>login</th>
-                    <th>Email</th>
-                    <th>isAuthorized</th>
-                    <th>CreatedAt</th>
-                    <th>UpdatedAt</th>
-                    <th>Action</th>
-                </tr>
-                </thead>
-                <tbody>
+                <td><%=moment(users[i].updatedAt).format('DD.MM.YYYY') %></td>
+                <td><div class="container">
+                        <div class="dropdown">
 
-                <% for(var i=0; i<users.length;i++) {%>
-                <tr>
-                    <td><%=users[i].id %></td>
-                    <td><%=users[i].name %></td>
-                    <td><%=users[i].login %></td>
-                    <td><%=users[i].email %></td>
-                    <td><%=users[i].is_authorized %></td>
-                    <td><%=moment(users[i].createdAt).format('DD.MM.YYYY') %></td>
-
-                    <td><%=moment(users[i].updatedAt).format('DD.MM.YYYY') %></td>
-                    <td><div class="container">
-                            <div class="dropdown">
-
-                                <button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle" data-toggle="dropdown">
-                                    Actions
-                                </button>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="#">Open</a>
-                                    <a class="dropdown-item" href="#">Edit</a>
-                                    <a class="dropdown-item" href="#">Delete</a>
-                                </div>
+                            <button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle" data-toggle="dropdown">
+                                Actions
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="/user/<%= users[i].id%>">Open</a>
+                                <a class="dropdown-item" href="/user/<%= users[i].id%>/update">Edit</a>
+                                <a class="dropdown-item" href="/user/<%= users[i].id%>/delete">Delete</a>
                             </div>
                         </div>
-                    </td>
-                </tr>
-                <%} %>
+                    </div>
+                </td>
+            </tr>
+            <%} %>
 
-                </tbody>
-            </table>
-        </div>
-    <h1></h1>
-    </body>
-</html>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+<%- include('../parts/footer'); %>
+
