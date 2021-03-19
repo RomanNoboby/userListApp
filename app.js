@@ -24,7 +24,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 db.sequelize.sync(); //This creates the table if it doesn't exist (and does nothing if it already exists)
 
-
+import { v4 as uuidv4 } from 'uuid';
+console.log(uuidv4());
+console.log(uuidv4());
+console.log(uuidv4());
 
 
 
