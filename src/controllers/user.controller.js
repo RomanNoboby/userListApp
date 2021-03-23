@@ -1,11 +1,13 @@
 import db from '../models';
 import InternalServerErrorException from "../errors/InternalServerErrorException";
-const User = db.users;
 const moment = require('moment');
 const { body } = require('express-validator');
 import { validationResult} from "express-validator";
 import prepareFormData from "../lib/prepearFormData";
+import BadRequestException from "../errors/BadRequestException";
 
+const User = db.users;
+const Image = db.images;
 
 const isEqualPassword = (value, { req }) => {
     if (value !== req.body.password) {
@@ -90,10 +92,25 @@ exports.updateUser = async (req, res, next) => {
     const updatedData = {name, login, email, password}
     const userId = req.params.id;
     try {
-        const user = await User.findByPk(userId);
-        if(user){
-            await user.update(updatedData);
+        const user = await User.findOne( {where: { id: userId }, include: {model: Image}});
+        if(!user){
+            next( new BadRequestException('Error: The user with id:' + userId + ' is not present in the database'));
         }
+
+        if (req.file){
+            if (user.image){
+                await user.image.destroy();
+            }
+
+            const imageData = {
+                originFileName: req.file.originalname,
+                fileName: req.file.filename,
+                userId: user.id,
+            }
+            const image = await Image.create(imageData);
+            await user.setImage(image);
+        }
+        await user.update(updatedData);
         res.redirect('/');
     } catch (err) {
         console.log(err);

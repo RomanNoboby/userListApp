@@ -3,7 +3,7 @@
     <div class="row justify-content-center p-5">
         <div class="col-lg-5 col-md-6 col-sm-8 bg-light border border-secondary rounded p-4 ">
 
-            <form id="user" name="user" method="post" action="/user/<%= user.id %>/update" >
+            <form id="user" name="user" method="post" enctype="multipart/form-data" action="/user/<%= user.id %>/update" >
                 <% if (!formData) {%>
 
                     <div class="form-group">
@@ -26,6 +26,11 @@
                         <input type="password" name="password" class="form-control" id="password" value="<%= user.password %>"placeholder="Password">
                     </div>
 
+                    <div class="form-group">
+                        <label for="avatar"></label>
+                        <input type="file" name="avatar" />
+                    </div>
+
                     <div class="row justify-content-end pr-2">
                         <form>
                             <input class="btn btn-secondary mr-1" type="button" value="Back" onclick="history.go(-1)">
@@ -44,7 +49,7 @@
                                    <%= loginFormData.errors && 'is-invalid' %>
                                    <%= !loginFormData.errors && 'is-valid' %>"
                                        id="login"
-                                       value="<%= loginFormData.value %>"
+                                       value="<%=loginFormData.value %>"
                                        placeholder="someLogin"
                                        autocomplete="off">
                                 <div class="valid-feedback">Looks good!</div>
@@ -151,6 +156,11 @@
                         </div>
                     <% } %>
 
+                        <div class="form-group">
+                            <label for="avatar"></label>
+                            <input type="file" name="avatar" />
+                        </div>
+
                         <div class="row justify-content-end pr-2">
                             <form>
                                 <input class="btn btn-secondary mr-1" type="button" value="Back" onclick="history.go(-1)">
@@ -159,7 +169,6 @@
                         </div>
 
                 <%}%>
-
             </form>
         </div>
     </div>
